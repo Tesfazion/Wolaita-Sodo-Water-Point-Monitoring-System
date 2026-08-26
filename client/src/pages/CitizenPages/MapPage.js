@@ -1,0 +1,185 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { Loader } from '@googlemaps/js-api-loader';
+import { analyticsAPI } from '../../services/api';
+import CitizenHeader from '../../components/common/CitizenHeader';
+import Footer from '../../components/common/Footer';
+import { Droplet, CheckCircle, AlertTriangle, Wrench, FileText } from '../../components/common/Icons';
+
+const MapPage = () => {
+  const [waterPoints, setWaterPoints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [mapError, setMapError] = useState('');
+  const [filter, setFilter] = useState('all');
+  const mapRef = useRef(null);
+  const googleMapRef = useRef(null);
+  const markersRef = useRef([]);
+
+  useEffect(() => {
+    analyticsAPI.getMapData()
+      .then(res => setWaterPoints(res.data.data))
+      .catch(() => setMapError('Failed to load water points data'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const initMap = useCallback(async () => {
+    try {
+      const loader = new Loader({
+        apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8',
+        version: 'weekly',
+        libraries: ['marker']
+      });
+      await loader.load();
+
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: { lat: 6.85, lng: 37.75 },
+        zoom: 11,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true,
+        styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
+      });
+      googleMapRef.current = map;
+
+      waterPoints.forEach(wp => {
+        const colors = { working: '28A745', reported_broken: 'DC3545', under_repair: 'FFC107' };
+        const color = colors[wp.current_status] || '6C757D';
+        const marker = new window.google.maps.Marker({
+          position: { lat: parseFloat(wp.latitude), lng: parseFloat(wp.longitude) },
+          map,
+          title: wp.name,
+          icon: { url: `https://ui-avatars.com/api/?name=WP&size=128&background=${color}&color=fff&rounded=true&bold=true&font-size=0.4`, scaledSize: new window.google.maps.Size(40, 40) },
+          animation: window.google.maps.Animation.DROP
+        });
+
+        const statusColors = { working: '#28A745', reported_broken: '#DC3545', under_repair: '#FFC107' };
+        const statusColor = statusColors[wp.current_status] || '#6C757D';
+        const statusText = wp.current_status.replace('_', ' ').toUpperCase();
+
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `
+            <div style="padding:12px;max-width:300px;font-family:Inter,sans-serif">
+              <h3 style="margin:0 0 8px;color:#E11D48;font-size:15px;font-weight:700">${wp.name}</h3>
+              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>Type:</strong> ${wp.type.replace('_', ' ')}</div>
+              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>Address:</strong> ${wp.address || 'N/A'}</div>
+              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>Status:</strong>
+                <span style="background:${statusColor};color:white;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:5px">${statusText}</span>
+              </div>
+              ${wp.active_reports > 0 ? `<div style="margin-top:10px;padding:8px;background:#FEF3C7;border-radius:8px;font-size:12px;font-weight:600;color:#92400E">⚠ ${wp.active_reports} Active Report${wp.active_reports > 1 ? 's' : ''}</div>` : ''}
+              <div style="margin-top:10px"><a href="/report" style="color:#E11D48;font-weight:600;font-size:13px;text-decoration:none">Report a Problem →</a></div>
+            </div>`
+        });
+
+        marker.addListener('click', () => {
+          markersRef.current.forEach(m => m.infoWindow.close());
+          infoWindow.open(map, marker);
+        });
+        markersRef.current.push({ marker, infoWindow, status: wp.current_status });
+      });
+    } catch (err) {
+      setMapError('Failed to load Google Maps. Please check your API key.');
+    }
+  }, [waterPoints]);
+
+  const filterMarkers = useCallback(() => {
+    markersRef.current.forEach(({ marker, status }) => {
+      marker.setVisible(filter === 'all' || status === filter);
+    });
+  }, [filter]);
+
+  useEffect(() => {
+    if (waterPoints.length > 0 && !googleMapRef.current) initMap();
+  }, [waterPoints, initMap]);
+
+  useEffect(() => {
+    if (googleMapRef.current) filterMarkers();
+  }, [filter, filterMarkers]);
+
+  const stats = {
+    total: waterPoints.length,
+    working: waterPoints.filter(wp => wp.current_status === 'working').length,
+    broken: waterPoints.filter(wp => wp.current_status === 'reported_broken').length,
+    repair: waterPoints.filter(wp => wp.current_status === 'under_repair').length
+  };
+
+  return (
+    <div>
+      <CitizenHeader />
+      <main className="container page-content">
+        <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '1.5rem' }}>
+          <img
+            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=350&fit=crop"
+            alt="Water points map across Wolaita Zone"
+          />
+          <div className="page-hero-overlay">
+            <h1>Water Points Map</h1>
+            <p>Interactive map showing all water points across Wolaita Zone</p>
+          </div>
+        </div>
+
+        <div className="stats-grid">
+          <div className="stat-card blue">
+            <div className="stat-card-icon"><Droplet size={24} /></div>
+            <div className="stat-card-value">{stats.total}</div>
+            <div className="stat-card-label">Total Points</div>
+          </div>
+          <div className="stat-card green">
+            <div className="stat-card-icon"><CheckCircle size={24} /></div>
+            <div className="stat-card-value">{stats.working}</div>
+            <div className="stat-card-label">Working</div>
+          </div>
+          <div className="stat-card red">
+            <div className="stat-card-icon"><AlertTriangle size={24} /></div>
+            <div className="stat-card-value">{stats.broken}</div>
+            <div className="stat-card-label">Need Repair</div>
+          </div>
+          <div className="stat-card orange">
+            <div className="stat-card-icon"><Wrench size={24} /></div>
+            <div className="stat-card-value">{stats.repair}</div>
+            <div className="stat-card-label">In Progress</div>
+          </div>
+        </div>
+
+        <div className="filter-bar">
+          {[
+            { key: 'all', label: `All (${stats.total})` },
+            { key: 'working', label: `Working (${stats.working})` },
+            { key: 'reported_broken', label: `Broken (${stats.broken})` },
+            { key: 'under_repair', label: `Repairing (${stats.repair})` }
+          ].map(f => (
+            <button key={f.key} className={`filter-btn ${filter === f.key ? 'active' : ''}`} onClick={() => setFilter(f.key)}>
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ height: '550px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', background: 'white' }}>
+          {loading ? (
+            <div className="loading-center"><div className="spinner-lg spinner"></div><p>Loading water points...</p></div>
+          ) : mapError ? (
+            <div className="loading-center"><div className="alert alert-error" style={{ maxWidth: 400 }}>{mapError}</div></div>
+          ) : (
+            <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
+          )}
+        </div>
+
+        <div className="map-legend">
+          <h3>Map Legend</h3>
+          <div className="legend-items">
+            <div className="legend-item"><div className="legend-dot" style={{ background: '#28A745' }}></div> Working</div>
+            <div className="legend-item"><div className="legend-dot" style={{ background: '#DC3545' }}></div> Reported Broken</div>
+            <div className="legend-item"><div className="legend-dot" style={{ background: '#F9826C' }}></div> Under Repair</div>
+          </div>
+          <p style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+            Click on any marker to view water point details and report issues. Use the filter buttons above to display specific statuses.
+          </p>
+        </div>
+      </main>
+
+      <Footer />
+      <Link to="/report" className="fab"><FileText size={18} /> Report Issue</Link>
+    </div>
+  );
+};
+
+export default MapPage;
