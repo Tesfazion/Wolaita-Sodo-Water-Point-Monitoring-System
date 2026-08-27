@@ -50,7 +50,7 @@ const AdminAnalytics = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <div className="analytics-chart-grid">
             <div className="card animate-fade-in-up delay-2">
               <div className="card-header"><h3>Report Status Breakdown</h3></div>
               <div className="card-body">

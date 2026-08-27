@@ -153,7 +153,7 @@ const MapPage = () => {
           ))}
         </div>
 
-        <div style={{ height: '550px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', background: 'white' }}>
+        <div style={{ height: 'min(550px, 60vh)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', background: 'white' }}>
           {loading ? (
             <div className="loading-center"><div className="spinner-lg spinner"></div><p>Loading water points...</p></div>
           ) : mapError ? (

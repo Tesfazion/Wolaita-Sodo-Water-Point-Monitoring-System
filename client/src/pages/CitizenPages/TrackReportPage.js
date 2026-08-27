@@ -59,7 +59,7 @@ const TrackReportPage = () => {
 
         <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
           <div className="card animate-fade-in-up delay-2" style={{ boxShadow: 'var(--shadow-md)' }}>
-            <div className="card-body" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', padding: '1.25rem 1.5rem' }}>
+            <div className="card-body" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', padding: '1.25rem 1.5rem', flexWrap: 'wrap' }}>
               <div style={{ flex: 1 }}>
                 <label className="form-label">Tracking Number</label>
                 <input type="text" className="form-input" placeholder="e.g. RPT-001" value={reportId} onChange={(e) => setReportId(e.target.value)} required />

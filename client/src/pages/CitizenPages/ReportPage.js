@@ -107,7 +107,7 @@ const ReportPage = () => {
                 <input id="photo-input" type="file" accept="image/*" onChange={handlePhoto} style={{ display: 'none' }} />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-row-2">
                 <div className="form-group">
                   <label className="form-label">Your Name (Optional)</label>
                   <input type="text" name="reporter_name" className="form-input" placeholder="Your name" value={formData.reporter_name} onChange={handleChange} />
