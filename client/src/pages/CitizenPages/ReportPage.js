@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { waterPointsAPI, reportsAPI } from '../../services/api';
 import CitizenHeader from '../../components/common/CitizenHeader';
 import Footer from '../../components/common/Footer';
 import { Camera, Upload } from '../../components/common/Icons';
 
 const ReportPage = () => {
+  const { t } = useTranslation();
   const [waterPoints, setWaterPoints] = useState([]);
   const [formData, setFormData] = useState({
     water_point_id: '', reporter_name: '', reporter_phone: '',
@@ -37,10 +39,10 @@ const ReportPage = () => {
       Object.keys(formData).forEach(k => fd.append(k, formData[k]));
       if (photo) fd.append('photo', photo);
       const res = await reportsAPI.submit(fd);
-      setSuccess(`Report submitted! ID: ${res.data.data.report_id}`);
+      setSuccess(`${t('report.successPrefix')}${res.data.data.report_id}`);
       setTimeout(() => navigate(`/track/${res.data.data.report_id}`), 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit report.');
+      setError(err.response?.data?.message || t('report.errorDefault'));
       setLoading(false);
     }
   };
@@ -55,8 +57,8 @@ const ReportPage = () => {
             alt="Report a broken water point"
           />
           <div className="page-hero-overlay">
-            <h1>Report a Water Point Fault</h1>
-            <p>Help your community by reporting broken or malfunctioning water points.</p>
+            <h1>{t('report.pageTitle')}</h1>
+            <p>{t('report.pageDesc')}</p>
           </div>
         </div>
 
@@ -67,40 +69,40 @@ const ReportPage = () => {
           <div className="card animate-fade-in-up delay-2" style={{ boxShadow: 'var(--shadow-lg)' }}>
             <div className="card-body" style={{ padding: '2rem' }}>
               <div className="form-group">
-                <label className="form-label">Water Point *</label>
+                <label className="form-label">{t('report.waterPoint')} *</label>
                 <select name="water_point_id" className="form-select" value={formData.water_point_id} onChange={handleChange} required>
-                  <option value="">-- Select Water Point --</option>
+                  <option value="">{t('report.selectWaterPoint')}</option>
                   {waterPoints.map(wp => <option key={wp.id} value={wp.id}>{wp.name} — {wp.address}</option>)}
                 </select>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Fault Type *</label>
+                <label className="form-label">{t('report.faultType')} *</label>
                 <select name="fault_type" className="form-select" value={formData.fault_type} onChange={handleChange} required>
-                  <option value="">-- Select Fault Type --</option>
-                  <option value="no_water">No Water Coming Out</option>
-                  <option value="pump_broken">Pump/Handle Broken</option>
-                  <option value="contaminated">Water Contaminated/Dirty</option>
-                  <option value="leaking">Leaking Pipes</option>
-                  <option value="other">Other Problem</option>
+                  <option value="">{t('report.selectFaultType')}</option>
+                  <option value="no_water">{t('report.faultNoWater')}</option>
+                  <option value="pump_broken">{t('report.faultPumpBroken')}</option>
+                  <option value="contaminated">{t('report.faultContaminated')}</option>
+                  <option value="leaking">{t('report.faultLeaking')}</option>
+                  <option value="other">{t('report.faultOther')}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Description</label>
-                <textarea name="description" className="form-textarea" rows="4" placeholder="Describe the problem in detail..." value={formData.description} onChange={handleChange} />
+                <label className="form-label">{t('report.description')}</label>
+                <textarea name="description" className="form-textarea" rows="4" placeholder={t('report.descriptionPlaceholder')} value={formData.description} onChange={handleChange} />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Photo (Optional)</label>
+                <label className="form-label">{t('report.photo')}</label>
                 <div className="photo-upload" onClick={() => document.getElementById('photo-input').click()}>
                   {photoPreview ? (
                     <img src={photoPreview} alt="Preview" className="photo-upload-preview" />
                   ) : (
                     <div>
                       <Camera size={40} style={{ margin: '0 auto 0.75rem', display: 'block', color: 'var(--text-muted)' }} />
-                      <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Click to upload a photo</p>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', margin: '0.25rem 0 0' }}>Photo evidence helps repairs happen faster</p>
+                      <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('report.photoUpload')}</p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', margin: '0.25rem 0 0' }}>{t('report.photoHelp')}</p>
                     </div>
                   )}
                 </div>
@@ -109,27 +111,27 @@ const ReportPage = () => {
 
               <div className="form-row-2">
                 <div className="form-group">
-                  <label className="form-label">Your Name (Optional)</label>
-                  <input type="text" name="reporter_name" className="form-input" placeholder="Your name" value={formData.reporter_name} onChange={handleChange} />
+                  <label className="form-label">{t('report.yourName')}</label>
+                  <input type="text" name="reporter_name" className="form-input" placeholder={t('report.namePlaceholder')} value={formData.reporter_name} onChange={handleChange} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Your Phone (Optional)</label>
-                  <input type="tel" name="reporter_phone" className="form-input" placeholder="+251-911-123456" value={formData.reporter_phone} onChange={handleChange} />
-                  <div className="form-help">We'll notify you when the problem is fixed</div>
+                  <label className="form-label">{t('report.yourPhone')}</label>
+                  <input type="tel" name="reporter_phone" className="form-input" placeholder={t('report.phonePlaceholder')} value={formData.reporter_phone} onChange={handleChange} />
+                  <div className="form-help">{t('report.phoneHelp')}</div>
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Priority</label>
+                <label className="form-label">{t('report.priority')}</label>
                 <select name="priority" className="form-select" value={formData.priority} onChange={handleChange}>
-                  <option value="normal">Normal</option>
-                  <option value="high">High (Many people affected)</option>
-                  <option value="urgent">Urgent (Health risk)</option>
+                  <option value="normal">{t('report.priorityNormal')}</option>
+                  <option value="high">{t('report.priorityHigh')}</option>
+                  <option value="urgent">{t('report.priorityUrgent')}</option>
                 </select>
               </div>
 
               <button type="submit" className="btn btn-success btn-full btn-lg" disabled={loading}>
-                {loading ? <><span className="spinner"></span> Submitting...</> : <><Upload size={18} /> Submit Report</>}
+                {loading ? <><span className="spinner"></span> {t('report.submitting')}</> : <><Upload size={18} /> {t('report.submitReport')}</>}
               </button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Loader } from '@googlemaps/js-api-loader';
 import { analyticsAPI } from '../../services/api';
 import CitizenHeader from '../../components/common/CitizenHeader';
@@ -7,6 +8,7 @@ import Footer from '../../components/common/Footer';
 import { Droplet, CheckCircle, AlertTriangle, Wrench, FileText } from '../../components/common/Icons';
 
 const MapPage = () => {
+  const { t } = useTranslation();
   const [waterPoints, setWaterPoints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mapError, setMapError] = useState('');
@@ -18,9 +20,9 @@ const MapPage = () => {
   useEffect(() => {
     analyticsAPI.getMapData()
       .then(res => setWaterPoints(res.data.data))
-      .catch(() => setMapError('Failed to load water points data'))
+      .catch(() => setMapError(t('map.loadError')))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   const initMap = useCallback(async () => {
     try {
@@ -60,13 +62,13 @@ const MapPage = () => {
           content: `
             <div style="padding:12px;max-width:300px;font-family:Inter,sans-serif">
               <h3 style="margin:0 0 8px;color:#E11D48;font-size:15px;font-weight:700">${wp.name}</h3>
-              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>Type:</strong> ${wp.type.replace('_', ' ')}</div>
-              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>Address:</strong> ${wp.address || 'N/A'}</div>
-              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>Status:</strong>
+              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>${t('map.infoType')}</strong> ${wp.type.replace('_', ' ')}</div>
+              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>${t('map.infoAddress')}</strong> ${wp.address || t('map.infoNA')}</div>
+              <div style="margin-bottom:6px;font-size:13px;color:#475569"><strong>${t('map.infoStatus')}</strong>
                 <span style="background:${statusColor};color:white;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:5px">${statusText}</span>
               </div>
-              ${wp.active_reports > 0 ? `<div style="margin-top:10px;padding:8px;background:#FEF3C7;border-radius:8px;font-size:12px;font-weight:600;color:#92400E">⚠ ${wp.active_reports} Active Report${wp.active_reports > 1 ? 's' : ''}</div>` : ''}
-              <div style="margin-top:10px"><a href="/report" style="color:#E11D48;font-weight:600;font-size:13px;text-decoration:none">Report a Problem →</a></div>
+              ${wp.active_reports > 0 ? `<div style="margin-top:10px;padding:8px;background:#FEF3C7;border-radius:8px;font-size:12px;font-weight:600;color:#92400E">⚠ ${wp.active_reports} ${wp.active_reports > 1 ? t('map.activeReports') : t('map.activeReport')}</div>` : ''}
+              <div style="margin-top:10px"><a href="/report" style="color:#E11D48;font-weight:600;font-size:13px;text-decoration:none">${t('map.reportProblemLink')}</a></div>
             </div>`
         });
 
@@ -77,9 +79,9 @@ const MapPage = () => {
         markersRef.current.push({ marker, infoWindow, status: wp.current_status });
       });
     } catch (err) {
-      setMapError('Failed to load Google Maps. Please check your API key.');
+      setMapError(t('map.mapsError'));
     }
-  }, [waterPoints]);
+  }, [waterPoints, t]);
 
   const filterMarkers = useCallback(() => {
     markersRef.current.forEach(({ marker, status }) => {
@@ -112,8 +114,8 @@ const MapPage = () => {
             alt="Interactive map of water points"
           />
           <div className="page-hero-overlay">
-            <h1>Water Points Map</h1>
-            <p>Interactive map showing all water points across Wolaita Zone</p>
+            <h1>{t('map.pageTitle')}</h1>
+            <p>{t('map.pageDesc')}</p>
           </div>
         </div>
 
@@ -121,31 +123,31 @@ const MapPage = () => {
           <div className="stat-card blue">
             <div className="stat-card-icon"><Droplet size={24} /></div>
             <div className="stat-card-value">{stats.total}</div>
-            <div className="stat-card-label">Total Points</div>
+            <div className="stat-card-label">{t('map.totalPoints')}</div>
           </div>
           <div className="stat-card green">
             <div className="stat-card-icon"><CheckCircle size={24} /></div>
             <div className="stat-card-value">{stats.working}</div>
-            <div className="stat-card-label">Working</div>
+            <div className="stat-card-label">{t('map.working')}</div>
           </div>
           <div className="stat-card red">
             <div className="stat-card-icon"><AlertTriangle size={24} /></div>
             <div className="stat-card-value">{stats.broken}</div>
-            <div className="stat-card-label">Need Repair</div>
+            <div className="stat-card-label">{t('map.needRepair')}</div>
           </div>
           <div className="stat-card orange">
             <div className="stat-card-icon"><Wrench size={24} /></div>
             <div className="stat-card-value">{stats.repair}</div>
-            <div className="stat-card-label">In Progress</div>
+            <div className="stat-card-label">{t('map.inProgress')}</div>
           </div>
         </div>
 
         <div className="filter-bar">
           {[
-            { key: 'all', label: `All (${stats.total})` },
-            { key: 'working', label: `Working (${stats.working})` },
-            { key: 'reported_broken', label: `Broken (${stats.broken})` },
-            { key: 'under_repair', label: `Repairing (${stats.repair})` }
+            { key: 'all', label: `${t('map.filterAll')} (${stats.total})` },
+            { key: 'working', label: `${t('map.filterWorking')} (${stats.working})` },
+            { key: 'reported_broken', label: `${t('map.filterBroken')} (${stats.broken})` },
+            { key: 'under_repair', label: `${t('map.filterRepairing')} (${stats.repair})` }
           ].map(f => (
             <button key={f.key} className={`filter-btn ${filter === f.key ? 'active' : ''}`} onClick={() => setFilter(f.key)}>
               {f.label}
@@ -155,7 +157,7 @@ const MapPage = () => {
 
         <div style={{ height: 'min(550px, 60vh)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', background: 'white' }}>
           {loading ? (
-            <div className="loading-center"><div className="spinner-lg spinner"></div><p>Loading water points...</p></div>
+            <div className="loading-center"><div className="spinner-lg spinner"></div><p>{t('map.loading')}</p></div>
           ) : mapError ? (
             <div className="loading-center"><div className="alert alert-error" style={{ maxWidth: 400 }}>{mapError}</div></div>
           ) : (
@@ -164,20 +166,20 @@ const MapPage = () => {
         </div>
 
         <div className="map-legend">
-          <h3>Map Legend</h3>
+          <h3>{t('map.legendTitle')}</h3>
           <div className="legend-items">
-            <div className="legend-item"><div className="legend-dot" style={{ background: '#28A745' }}></div> Working</div>
-            <div className="legend-item"><div className="legend-dot" style={{ background: '#DC3545' }}></div> Reported Broken</div>
-            <div className="legend-item"><div className="legend-dot" style={{ background: '#F9826C' }}></div> Under Repair</div>
+            <div className="legend-item"><div className="legend-dot" style={{ background: '#28A745' }}></div> {t('map.legendWorking')}</div>
+            <div className="legend-item"><div className="legend-dot" style={{ background: '#DC3545' }}></div> {t('map.legendBroken')}</div>
+            <div className="legend-item"><div className="legend-dot" style={{ background: '#F9826C' }}></div> {t('map.legendRepairing')}</div>
           </div>
           <p style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-            Click on any marker to view water point details and report issues. Use the filter buttons above to display specific statuses.
+            {t('map.mapTip')}
           </p>
         </div>
       </main>
 
       <Footer />
-      <Link to="/report" className="fab"><FileText size={18} /> Report Issue</Link>
+      <Link to="/report" className="fab"><FileText size={18} /> {t('map.reportIssueFab')}</Link>
     </div>
   );
 };

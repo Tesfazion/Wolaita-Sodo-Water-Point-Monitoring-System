@@ -4,8 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import { analyticsAPI } from '../../services/api';
 import AdminLayout from '../../components/common/AdminLayout';
 import { CheckCircle, AlertTriangle, Wrench, Clock, ArrowRight } from '../../components/common/Icons';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,8 +22,8 @@ const AdminDashboard = () => {
   return (
     <AdminLayout>
       <div className="admin-page-header animate-fade-in-up">
-        <h1>Dashboard Overview</h1>
-        <p>Welcome back, {user?.name}. Here's what's happening with water infrastructure today.</p>
+        <h1>{t('admin.dashboardTitle')}</h1>
+        <p>{t('admin.welcomeBack')}{user?.name}{t('admin.welcomeDesc')}</p>
       </div>
 
       {loading ? (
@@ -32,35 +34,35 @@ const AdminDashboard = () => {
             <div className="stat-card green">
               <div className="stat-card-icon"><CheckCircle size={24} /></div>
               <div className="stat-card-value">{stats.water_points?.working || 0}</div>
-              <div className="stat-card-label">Working Water Points</div>
+              <div className="stat-card-label">{t('admin.workingPoints')}</div>
             </div>
             <div className="stat-card red">
               <div className="stat-card-icon"><AlertTriangle size={24} /></div>
               <div className="stat-card-value">{stats.reports?.new_reports || 0}</div>
-              <div className="stat-card-label">New Reports</div>
+              <div className="stat-card-label">{t('admin.newReports')}</div>
             </div>
             <div className="stat-card orange">
               <div className="stat-card-icon"><Wrench size={24} /></div>
               <div className="stat-card-value">{stats.reports?.in_progress || 0}</div>
-              <div className="stat-card-label">In Progress</div>
+              <div className="stat-card-label">{t('admin.inProgress')}</div>
             </div>
             <div className="stat-card blue">
               <div className="stat-card-icon"><Clock size={24} /></div>
               <div className="stat-card-value">{stats.avg_resolution_time_hours || 0}h</div>
-              <div className="stat-card-label">Avg Resolution Time</div>
+              <div className="stat-card-label">{t('admin.avgResolution')}</div>
             </div>
           </div>
 
           <div className="card animate-fade-in-up delay-2" style={{ boxShadow: 'var(--shadow-sm)' }}>
             <div className="card-header">
-              <h3>Recent Reports</h3>
-              <Link to="/admin/reports" className="btn btn-ghost btn-sm">View All <ArrowRight size={14} /></Link>
+              <h3>{t('admin.recentReports')}</h3>
+              <Link to="/admin/reports" className="btn btn-ghost btn-sm">{t('admin.viewAll')} <ArrowRight size={14} /></Link>
             </div>
             <div className="table-scroll">
               <table>
                 <thead>
                   <tr>
-                    <th>ID</th><th>Water Point</th><th>Fault</th><th>Status</th><th>Priority</th><th>Date</th>
+                    <th>{t('admin.tableId')}</th><th>{t('admin.tableWaterPoint')}</th><th>{t('admin.tableFault')}</th><th>{t('admin.tableStatus')}</th><th>{t('admin.tablePriority')}</th><th>{t('admin.tableDate')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -76,7 +78,7 @@ const AdminDashboard = () => {
                       </tr>
                     ))
                   ) : (
-                    <tr><td colSpan="6" className="text-center" style={{ padding: '2rem', color: 'var(--text-muted)' }}>No recent reports</td></tr>
+                    <tr><td colSpan="6" className="text-center" style={{ padding: '2rem', color: 'var(--text-muted)' }}>{t('admin.noReports')}</td></tr>
                   )}
                 </tbody>
               </table>
@@ -84,7 +86,7 @@ const AdminDashboard = () => {
           </div>
         </>
       ) : (
-        <div className="alert alert-error">Failed to load dashboard data. Please refresh.</div>
+        <div className="alert alert-error">{t('admin.dashboardError')}</div>
       )}
     </AdminLayout>
   );

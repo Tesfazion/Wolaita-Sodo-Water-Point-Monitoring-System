@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { waterPointsAPI } from '../../services/api';
 import AdminLayout from '../../components/common/AdminLayout';
 import { Droplet, CheckCircle, AlertTriangle, Wrench, Inbox } from '../../components/common/Icons';
+import { useTranslation } from 'react-i18next';
 
 const AdminWaterPoints = () => {
+  const { t } = useTranslation();
   const [waterPoints, setWaterPoints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -28,39 +30,39 @@ const AdminWaterPoints = () => {
   return (
     <AdminLayout>
       <div className="admin-page-header animate-fade-in-up">
-        <h1>Water Points Registry</h1>
-        <p>Manage and monitor all registered water points across Wolaita Zone</p>
+        <h1>{t('admin.waterPointsTitle')}</h1>
+        <p>{t('admin.waterPointsDesc')}</p>
       </div>
 
       <div className="stats-grid animate-fade-in-up delay-1">
         <div className="stat-card blue">
           <div className="stat-card-icon"><Droplet size={24} /></div>
           <div className="stat-card-value">{stats.total}</div>
-          <div className="stat-card-label">Total Points</div>
+          <div className="stat-card-label">{t('admin.totalPoints')}</div>
         </div>
         <div className="stat-card green">
           <div className="stat-card-icon"><CheckCircle size={24} /></div>
           <div className="stat-card-value">{stats.working}</div>
-          <div className="stat-card-label">Working</div>
+          <div className="stat-card-label">{t('admin.working')}</div>
         </div>
         <div className="stat-card red">
           <div className="stat-card-icon"><AlertTriangle size={24} /></div>
           <div className="stat-card-value">{stats.broken}</div>
-          <div className="stat-card-label">Need Repair</div>
+          <div className="stat-card-label">{t('admin.needRepair')}</div>
         </div>
         <div className="stat-card orange">
           <div className="stat-card-icon"><Wrench size={24} /></div>
           <div className="stat-card-value">{stats.repair}</div>
-          <div className="stat-card-label">Under Repair</div>
+          <div className="stat-card-label">{t('admin.underRepair')}</div>
         </div>
       </div>
 
       <div className="filter-bar">
         {[
-          { key: 'all', label: `All (${stats.total})` },
-          { key: 'working', label: `Working (${stats.working})` },
-          { key: 'reported_broken', label: `Broken (${stats.broken})` },
-          { key: 'under_repair', label: `Repairing (${stats.repair})` }
+          { key: 'all', label: `${t('admin.filterAll')} (${stats.total})` },
+          { key: 'working', label: `${t('admin.working')} (${stats.working})` },
+          { key: 'reported_broken', label: `${t('admin.filterBroken')} (${stats.broken})` },
+          { key: 'under_repair', label: `${t('admin.filterRepairing')} (${stats.repair})` }
         ].map(f => (
           <button key={f.key} className={`filter-btn ${filter === f.key ? 'active' : ''}`} onClick={() => setFilter(f.key)}>{f.label}</button>
         ))}
@@ -69,14 +71,14 @@ const AdminWaterPoints = () => {
       {loading ? (
         <div className="loading-center"><div className="spinner-lg spinner"></div></div>
       ) : filtered.length === 0 ? (
-        <div className="card"><div className="card-body empty-state"><div className="empty-state-icon"><Inbox size={48} /></div><h3>No water points found</h3></div></div>
+        <div className="card"><div className="card-body empty-state"><div className="empty-state-icon"><Inbox size={48} /></div><h3>{t('admin.noWaterPoints')}</h3></div></div>
       ) : (
         <div className="table-wrap animate-fade-in-up delay-2">
           <div className="table-scroll">
             <table style={{ minWidth: 800 }}>
               <thead>
                 <tr>
-                  <th>ID</th><th>Name</th><th>Type</th><th>Location</th><th>Status</th><th>Reports</th><th>Coordinates</th>
+                  <th>{t('admin.tableId')}</th><th>{t('admin.tableName')}</th><th>{t('admin.tableType')}</th><th>{t('admin.tableLocation')}</th><th>{t('admin.tableStatus')}</th><th>{t('admin.tableReports')}</th><th>{t('admin.tableCoordinates')}</th>
                 </tr>
               </thead>
               <tbody>
