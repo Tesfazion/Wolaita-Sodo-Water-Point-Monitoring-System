@@ -11,8 +11,8 @@ const AboutPage = () => (
 
       <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '2.5rem' }}>
         <img
-          src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=1200&h=400&fit=crop"
-          alt="Wolaita Zone water infrastructure"
+          src="https://images.unsplash.com/photo-1760873059715-7c7cfbe2a2c6?w=1200&h=400&fit=crop"
+          alt="Community water pump in rural Africa"
         />
         <div className="page-hero-overlay">
           <h1 style={{ marginBottom: '0.5rem' }}>About Wolaita Sodo Water-Point Monitoring System</h1>
@@ -22,12 +22,14 @@ const AboutPage = () => (
 
       <div className="card mb-lg animate-fade-in-up delay-1">
         <div className="card-body">
-          <div className="info-card-with-image">
-            <img
-              src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800&h=500&fit=crop"
-              alt="Community water point in Ethiopia"
-            />
-            <div>
+          <div className="about-split">
+            <div className="about-split-image">
+              <img
+                src="https://images.unsplash.com/photo-1753940720022-053869f608c4?w=800&h=500&fit=crop"
+                alt="Hand pump in rural landscape"
+              />
+            </div>
+            <div className="about-split-content">
               <h2 style={{ color: 'var(--primary)', marginBottom: '0.75rem' }}>What is Wolaita Sodo Water-Point Monitoring System?</h2>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8 }}>
                 Wolaita Sodo Water-Point Monitoring System is a community water-point monitoring system designed specifically for Wolaita Zone in South Ethiopia.
@@ -84,12 +86,12 @@ const AboutPage = () => (
         <div className="card-body">
           <div className="about-image-grid" style={{ marginBottom: '1.5rem' }}>
             <img
-              src="https://images.unsplash.com/photo-1468421870903-4df1664ac249?w=600&h=400&fit=crop"
-              alt="Water pump maintenance"
+              src="https://images.unsplash.com/photo-1760873059715-7c7cfbe2a2c6?w=600&h=400&fit=crop"
+              alt="Children at a village water pump"
             />
             <img
-              src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=600&h=400&fit=crop"
-              alt="Community water access"
+              src="https://images.unsplash.com/photo-1753940720022-053869f608c4?w=600&h=400&fit=crop"
+              alt="Water pump in rural area"
             />
           </div>
           <h2 style={{ marginBottom: '0.75rem' }}>Coverage Area</h2>

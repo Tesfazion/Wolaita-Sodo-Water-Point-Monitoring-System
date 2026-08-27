@@ -109,7 +109,7 @@ const MapPage = () => {
         <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '1.5rem' }}>
           <img
             src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=350&fit=crop"
-            alt="Water points map across Wolaita Zone"
+            alt="Interactive map of water points"
           />
           <div className="page-hero-overlay">
             <h1>Water Points Map</h1>

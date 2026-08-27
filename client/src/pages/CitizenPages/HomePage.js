@@ -28,16 +28,14 @@ const HomePage = () => {
     <div>
       <CitizenHeader />
 
-      <section className="hero" style={{ position: 'relative' }}>
+      <section className="hero">
         <img
-          src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=1600&h=900&fit=crop"
-          alt="Water infrastructure in Ethiopia"
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', opacity: 0.18, pointerEvents: 'none'
-          }}
+          src="https://images.unsplash.com/photo-1760873059715-7c7cfbe2a2c6?w=1600&h=900&fit=crop"
+          alt="Community water pump in rural Africa"
+          className="hero-bg-image"
         />
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-overlay" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="animate-fade-in-up">
             <h1>Report Water Issues<br />in Wolaita</h1>
           </div>
@@ -84,16 +82,25 @@ const HomePage = () => {
           <p className="section-subtitle animate-fade-in-up delay-1">Three simple steps to report and track water point issues</p>
           <div className="feature-grid">
             <Link to="/map" className="feature-card animate-fade-in-up delay-2">
+              <div className="feature-card-image">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=300&fit=crop" alt="Map of water points" />
+              </div>
               <div className="feature-card-icon blue"><Map size={28} /></div>
               <h3>View the Map</h3>
               <p>Explore all water points across Wolaita Zone on an interactive map with real-time status.</p>
             </Link>
             <Link to="/report" className="feature-card animate-fade-in-up delay-3">
+              <div className="feature-card-image">
+                <img src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=600&h=300&fit=crop" alt="Report a water point fault" />
+              </div>
               <div className="feature-card-icon green"><FileText size={28} /></div>
               <h3>Report a Problem</h3>
               <p>Submit a fault report with photos in under a minute. Your report goes directly to the WASH office.</p>
             </Link>
             <Link to="/track" className="feature-card animate-fade-in-up delay-4">
+              <div className="feature-card-image">
+                <img src="https://images.unsplash.com/photo-1468421870903-4df1664ac249?w=600&h=300&fit=crop" alt="Track your report progress" />
+              </div>
               <div className="feature-card-icon orange"><BarChart3 size={28} /></div>
               <h3>Track Progress</h3>
               <p>Follow your report from submission to resolution with real-time status updates.</p>
@@ -104,22 +111,22 @@ const HomePage = () => {
 
       <section className="section">
         <div className="container">
-          <div className="info-card-with-image animate-fade-in-up">
-            <img
-              src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=800&h=500&fit=crop"
-              alt="Community water point in rural Ethiopia"
-            />
-            <div>
-              <h2 style={{ marginBottom: '1rem' }}>About Wolaita Sodo Water-Point Monitoring System</h2>
-              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '1rem' }}>
+          <div className="about-split animate-fade-in-up">
+            <div className="about-split-image">
+              <img
+                src="https://images.unsplash.com/photo-1753940720022-053869f608c4?w=800&h=600&fit=crop"
+                alt="Hand pump water point in rural landscape"
+              />
+            </div>
+            <div className="about-split-content">
+              <h2>About Wolaita Sodo Water-Point Monitoring System</h2>
+              <p>
                 Wolaita Sodo Water-Point Monitoring System is a community-driven water infrastructure monitoring system designed for Wolaita Zone in South Ethiopia.
                 It enables citizens to report broken or malfunctioning water points in real-time and helps local WASH offices
                 track and resolve issues efficiently.
               </p>
-              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '1.5rem' }}>
+              <p>
                 By working together, we can ensure that every community has access to clean, safe water.
-                Our WASH offices and technicians receive your reports immediately and coordinate repairs
-                to restore water access as quickly as possible.
               </p>
               <Link to="/about" className="btn btn-primary">Learn More <ArrowRight size={16} /></Link>
             </div>

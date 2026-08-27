@@ -49,7 +49,7 @@ const TrackReportPage = () => {
         <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '2rem' }}>
           <img
             src="https://images.unsplash.com/photo-1468421870903-4df1664ac249?w=1200&h=350&fit=crop"
-            alt="Track your water point report"
+            alt="Track water point repair progress"
           />
           <div className="page-hero-overlay">
             <h1>Track Your Report</h1>

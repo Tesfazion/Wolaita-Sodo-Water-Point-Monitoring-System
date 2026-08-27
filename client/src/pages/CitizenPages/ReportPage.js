@@ -52,7 +52,7 @@ const ReportPage = () => {
         <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '2rem' }}>
           <img
             src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=1200&h=350&fit=crop"
-            alt="Report a water point fault"
+            alt="Report a broken water point"
           />
           <div className="page-hero-overlay">
             <h1>Report a Water Point Fault</h1>

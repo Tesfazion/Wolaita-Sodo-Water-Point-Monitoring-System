@@ -23,11 +23,11 @@ const AdminLogin = () => {
   return (
     <div className="login-bg" style={{ position: 'relative' }}>
       <img
-        src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=1600&h=1000&fit=crop"
+        src="https://images.unsplash.com/photo-1760873059715-7c7cfbe2a2c6?w=1600&h=1000&fit=crop"
         alt=""
         style={{
           position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', opacity: 0.08, pointerEvents: 'none'
+          objectFit: 'cover', opacity: 0.06, pointerEvents: 'none'
         }}
       />
       <div className="login-container">
