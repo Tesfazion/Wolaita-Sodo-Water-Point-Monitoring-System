@@ -4,11 +4,16 @@
  */
 
 const multer = require('multer');
+const os = require('os');
 const path = require('path');
 const fs = require('fs');
 
+// On serverless hosts (Vercel) the filesystem is ephemeral, so use /tmp.
+const uploadsDir = process.env.VERCEL
+    ? path.join(os.tmpdir(), 'uploads')
+    : path.join(__dirname, '../../uploads');
+
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }

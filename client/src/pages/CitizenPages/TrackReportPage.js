@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { reportsAPI } from '../../services/api';
@@ -14,9 +14,7 @@ const TrackReportPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => { if (id) fetchReport(id); }, [id]);
-
-  const fetchReport = async (trackingId) => {
+  const fetchReport = useCallback(async (trackingId) => {
     setLoading(true); setError(''); setReport(null);
     try {
       const res = await reportsAPI.trackReport(trackingId);
@@ -24,12 +22,14 @@ const TrackReportPage = () => {
     } catch (err) {
       setError(err.response?.data?.message || t('track.notFound'));
     } finally { setLoading(false); }
-  };
+  }, [t]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (reportId.trim()) fetchReport(reportId.trim());
   };
+
+  useEffect(() => { if (id) fetchReport(id); }, [id, fetchReport]);
 
   const statusConfig = {
     reported: { color: 'var(--primary)', icon: <FileText size={28} />, label: t('track.statusReported'), msg: t('track.statusReportedDesc') },
@@ -50,7 +50,7 @@ const TrackReportPage = () => {
       <main className="container-narrow page-content">
         <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '2rem' }}>
           <img
-            src="https://images.unsplash.com/photo-1468421870903-4df1664ac249?w=1200&h=350&fit=crop"
+            src="https://images.unsplash.com/photo-1676210134188-4c05dd172f89?w=1200&h=350&fit=crop"
             alt="Track water point repair progress"
           />
           <div className="page-hero-overlay">

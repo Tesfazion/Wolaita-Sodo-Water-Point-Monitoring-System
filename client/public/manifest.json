@@ -3,13 +3,14 @@
   "name": "Wolaita Sodo Water-Point Monitoring System",
   "icons": [
     {
-      "src": "wolaita-logo.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/png"
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#DC2626",
+  "theme_color": "#E11D48",
   "background_color": "#FFFBEB"
 }

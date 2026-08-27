@@ -85,7 +85,7 @@ const HomePage = () => {
           <div className="feature-grid">
             <Link to="/map" className="feature-card animate-fade-in-up delay-2">
               <div className="feature-card-image">
-                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=300&fit=crop" alt={t('home.mapImgAlt')} />
+                <img src="https://images.unsplash.com/photo-1748442001865-5583ec02ae22?w=600&h=300&fit=crop" alt={t('home.mapImgAlt')} />
               </div>
               <div className="feature-card-icon blue"><Map size={28} /></div>
               <h3>{t('home.viewTheMap')}</h3>
@@ -93,7 +93,7 @@ const HomePage = () => {
             </Link>
             <Link to="/report" className="feature-card animate-fade-in-up delay-3">
               <div className="feature-card-image">
-                <img src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=600&h=300&fit=crop" alt={t('home.reportImgAlt')} />
+                <img src="https://images.unsplash.com/photo-1676210134190-3f2c0d5cf58d?w=600&h=300&fit=crop" alt={t('home.reportImgAlt')} />
               </div>
               <div className="feature-card-icon green"><FileText size={28} /></div>
               <h3>{t('home.reportAProblem')}</h3>
@@ -101,7 +101,7 @@ const HomePage = () => {
             </Link>
             <Link to="/track" className="feature-card animate-fade-in-up delay-4">
               <div className="feature-card-image">
-                <img src="https://images.unsplash.com/photo-1468421870903-4df1664ac249?w=600&h=300&fit=crop" alt={t('home.trackImgAlt')} />
+                <img src="https://images.unsplash.com/photo-1696853961331-22ed783d24cd?w=600&h=300&fit=crop" alt={t('home.trackImgAlt')} />
               </div>
               <div className="feature-card-icon orange"><BarChart3 size={28} /></div>
               <h3>{t('home.trackProgress')}</h3>
@@ -114,8 +114,8 @@ const HomePage = () => {
       <section className="cta-banner-section">
         <div className="cta-banner">
           <img
-            src="https://images.unsplash.com/photo-1590595906931-81f04f0ccebb?w=1400&h=500&fit=crop"
-            alt="Community water project"
+            src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=1400&h=500&fit=crop"
+            alt="Water point repair in progress"
             className="cta-banner-img"
           />
           <div className="cta-banner-overlay">
@@ -133,7 +133,7 @@ const HomePage = () => {
           <div className="about-split animate-fade-in-up">
             <div className="about-split-image">
               <img
-                src="https://images.unsplash.com/photo-1753940720022-053869f608c4?w=800&h=600&fit=crop"
+                src="https://images.unsplash.com/photo-1720175626735-193ff59ebd90?w=800&h=600&fit=crop"
                 alt={t('home.aboutImgAlt')}
               />
             </div>

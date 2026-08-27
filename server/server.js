@@ -10,6 +10,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fs = require('fs');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -132,6 +133,25 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // =====================================================
+// PRODUCTION FRONTEND (React build)
+// =====================================================
+
+// Serve the built React frontend when it exists
+const clientBuildDir = path.join(__dirname, '../client/build');
+if (fs.existsSync(clientBuildDir)) {
+    // Serve static assets from the build
+    app.use(express.static(clientBuildDir));
+
+    // SPA fallback for client-side routing (React Router)
+    app.use((req, res, next) => {
+        if (req.method === 'GET' && !req.path.startsWith('/api/') && !req.path.startsWith('/uploads/')) {
+            return res.sendFile(path.join(clientBuildDir, 'index.html'));
+        }
+        return next();
+    });
+}
+
+// =====================================================
 // ERROR HANDLING
 // =====================================================
 
@@ -159,26 +179,32 @@ app.use((err, req, res, next) => {
 // SERVER STARTUP
 // =====================================================
 
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-    console.log('═══════════════════════════════════════════════════════');
-    console.log('  Wolaita Sodo Water-Point Monitoring API');
-    console.log('  Community Water-Point Monitoring System');
-    console.log('  Location: Wolaita Zone, South Ethiopia');
-    console.log('═══════════════════════════════════════════════════════');
-    console.log(`  Server running on port ${PORT}`);
-    console.log(`  Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`  API: http://localhost:${PORT}/api`);
-    console.log(`  Health Check: http://localhost:${PORT}/api/health`);
-    console.log('═══════════════════════════════════════════════════════');
-});
+// On Vercel the app is exported as a serverless function (api/index.js),
+// so skip app.listen there.
+const isServerless = process.env.VERCEL !== undefined;
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    console.log('SIGTERM signal received: closing HTTP server');
-    server.close(() => {
-        console.log('HTTP server closed');
+if (!isServerless) {
+    const PORT = process.env.PORT || 5000;
+    const server = app.listen(PORT, () => {
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('  Wolaita Sodo Water-Point Monitoring API');
+        console.log('  Community Water-Point Monitoring System');
+        console.log('  Location: Wolaita Zone, South Ethiopia');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log(`  Server running on port ${PORT}`);
+        console.log(`  Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`  API: http://localhost:${PORT}/api`);
+        console.log(`  Health Check: http://localhost:${PORT}/api/health`);
+        console.log('═══════════════════════════════════════════════════════');
     });
-});
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+        console.log('SIGTERM signal received: closing HTTP server');
+        server.close(() => {
+            console.log('HTTP server closed');
+        });
+    });
+}
 
 module.exports = app;

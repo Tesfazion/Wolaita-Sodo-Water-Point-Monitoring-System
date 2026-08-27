@@ -1,5 +1,9 @@
 {
-  "lang": { "en": "English", "am": "አማርኛ", "wt": "Wolaytatto" },
+  "lang": {
+    "en": "English",
+    "am": "አማርኛ",
+    "wt": "Wolaytatto"
+  },
   "nav": {
     "home": "Home",
     "map": "Map",
@@ -79,7 +83,19 @@
     "getStarted": "Get Started",
     "getStartedDesc": "Ready to help your community access clean water?",
     "viewMapBtn": "View Map",
-    "reportFaultBtn": "Report a Fault"
+    "reportFaultBtn": "Report a Fault",
+    "impactValue1": "1",
+    "impactValue2": "Wolaita",
+    "impactValue3": "Real-time",
+    "impactValue4": "Free",
+    "impactLabel1": "Community-driven",
+    "impactLabel2": "Zone-wide coverage",
+    "impactLabel3": "Reporting & tracking",
+    "impactLabel4": "For every community",
+    "galleryCap1": "Hand pumps & shallow wells",
+    "galleryCap2": "Servicing & repairs",
+    "galleryCap3": "Clean water for all",
+    "loTag": "Lo — the Wolaytta word for ‘good’. Good water, for every community."
   },
   "map": {
     "pageTitle": "Water Points Map",
@@ -107,7 +123,11 @@
     "reportProblemLink": "Report a Problem →",
     "reportIssueFab": "Report Issue",
     "loadError": "Failed to load water points data",
-    "mapsError": "Failed to load Google Maps. Please check your API key."
+    "mapsError": "Failed to load Google Maps. Please check your API key.",
+    "galleryTitle": "Healthy water, healthy community",
+    "galleryTag": "Hand pumps & shallow wells",
+    "galleryTag2": "People at the water point",
+    "galleryTag3": "Water infrastructure"
   },
   "report": {
     "pageTitle": "Report a Water Point Fault",
@@ -138,7 +158,16 @@
     "submitting": "Submitting...",
     "submitReport": "Submit Report",
     "successPrefix": "Report submitted! ID: ",
-    "errorDefault": "Failed to submit report."
+    "errorDefault": "Failed to submit report.",
+    "nextBadge": "What Happens Next",
+    "nextTitle": "After You Submit Your Report",
+    "nextSub": "Here is how your report helps get the water flowing again.",
+    "step1T": "Report is registered",
+    "step1D": "You instantly receive a tracking number to follow your report.",
+    "step2T": "Forwarded to the WASH office",
+    "step2D": "It reaches the responsible water office and is assigned to a repair team.",
+    "step3T": "Repair & resolution",
+    "step3D": "Track the status until your water point is working again."
   },
   "track": {
     "pageTitle": "Track Your Report",
@@ -289,7 +318,8 @@
     "aboutUs": "About Us",
     "contact": "Contact",
     "address": "Sodo City, Wolaita",
-    "copyright": "© 2026 Wolaita Sodo Water-Point Monitoring System — Sunshine Tech Solution"
+    "copyright": "© 2026 Wolaita Sodo Water-Point Monitoring System — Sunshine Tech Solution",
+    "adminLogin": "Admin Login"
   },
   "common": {
     "learnMore": "Learn More",

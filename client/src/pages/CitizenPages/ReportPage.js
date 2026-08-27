@@ -61,6 +61,7 @@ const ReportPage = () => {
             <p>{t('report.pageDesc')}</p>
           </div>
         </div>
+        <span className="wolaita-tibeb animate-fade-in-up" style={{ marginBottom: '1.5rem' }}></span>
 
         {error && <div className="alert alert-error">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
@@ -136,6 +137,31 @@ const ReportPage = () => {
             </div>
           </div>
         </form>
+
+        <div className="card report-next animate-fade-in-up delay-4">
+          <div className="report-next-image">
+            <img src="https://images.unsplash.com/photo-1551604283-246c763f2cda?w=700&h=460&fit=crop" alt={t('report.nextTitle')} />
+          </div>
+          <div className="report-next-body">
+            <span className="wolaita-chip"><span className="chip-dot"></span> {t('report.nextBadge')}</span>
+            <h2 style={{ margin: '0.75rem 0 0.25rem' }}>{t('report.nextTitle')}</h2>
+            <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('report.nextSub')}</p>
+            <div className="report-next-steps">
+              <div className="report-next-step">
+                <span className="step-num">1</span>
+                <div><strong>{t('report.step1T')}</strong><p>{t('report.step1D')}</p></div>
+              </div>
+              <div className="report-next-step">
+                <span className="step-num">2</span>
+                <div><strong>{t('report.step2T')}</strong><p>{t('report.step2D')}</p></div>
+              </div>
+              <div className="report-next-step">
+                <span className="step-num">3</span>
+                <div><strong>{t('report.step3T')}</strong><p>{t('report.step3D')}</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

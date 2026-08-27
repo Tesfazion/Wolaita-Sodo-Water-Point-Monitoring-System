@@ -25,6 +25,7 @@ const Footer = () => {
           <h4>{t('footer.resources')}</h4>
           <ul>
             <li><Link to="/about">{t('footer.aboutUs')}</Link></li>
+            <li><Link to="/admin/login">{t('footer.adminLogin')}</Link></li>
           </ul>
         </div>
         <div className="footer-col">

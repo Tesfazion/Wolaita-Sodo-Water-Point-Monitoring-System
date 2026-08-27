@@ -26,8 +26,14 @@ const MapPage = () => {
 
   const initMap = useCallback(async () => {
     try {
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        setMapError(t('map.loadError'));
+        setLoading(false);
+        return;
+      }
       const loader = new Loader({
-        apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8',
+        apiKey,
         version: 'weekly',
         libraries: ['marker']
       });
@@ -110,8 +116,8 @@ const MapPage = () => {
       <main className="container page-content">
         <div className="page-hero-image animate-fade-in-up" style={{ marginBottom: '1.5rem' }}>
           <img
-            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=350&fit=crop"
-            alt="Interactive map of water points"
+            src="https://images.unsplash.com/photo-1748442001865-5583ec02ae22?w=1200&h=350&fit=crop"
+            alt={t('map.pageTitle')}
           />
           <div className="page-hero-overlay">
             <h1>{t('map.pageTitle')}</h1>
@@ -165,16 +171,55 @@ const MapPage = () => {
           )}
         </div>
 
-        <div className="map-legend">
-          <h3>{t('map.legendTitle')}</h3>
-          <div className="legend-items">
-            <div className="legend-item"><div className="legend-dot" style={{ background: '#28A745' }}></div> {t('map.legendWorking')}</div>
-            <div className="legend-item"><div className="legend-dot" style={{ background: '#DC3545' }}></div> {t('map.legendBroken')}</div>
-            <div className="legend-item"><div className="legend-dot" style={{ background: '#F9826C' }}></div> {t('map.legendRepairing')}</div>
+        <div className="card mb-lg animate-fade-in-up">
+          <div className="card-body map-info-split">
+            <div className="map-legend">
+              <h3>{t('map.legendTitle')}</h3>
+              <div className="legend-items">
+                <div className="legend-item"><div className="legend-dot" style={{ background: '#28A745' }}></div> {t('map.legendWorking')}</div>
+                <div className="legend-item"><div className="legend-dot" style={{ background: '#DC3545' }}></div> {t('map.legendBroken')}</div>
+                <div className="legend-item"><div className="legend-dot" style={{ background: '#F9826C' }}></div> {t('map.legendRepairing')}</div>
+              </div>
+              <p style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                {t('map.mapTip')}
+              </p>
+            </div>
+            <div className="map-context">
+              <img
+                src="https://images.unsplash.com/photo-1504386106331-3e4e71712b38?w=600&h=320&fit=crop"
+                alt={t('map.pageTitle')}
+              />
+              <div>
+                <h3>{stats.total} {t('map.totalPoints')}</h3>
+                <p>{t('map.pageDesc')}</p>
+                <div className="map-context-stats">
+                  <span className="chip green">{stats.working} {t('map.working')}</span>
+                  <span className="chip red">{stats.broken} {t('map.needRepair')}</span>
+                  <span className="chip orange">{stats.repair} {t('map.inProgress')}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <p style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-            {t('map.mapTip')}
-          </p>
+        </div>
+
+        <div className="map-gallery card animate-fade-in-up">
+          <div className="card-body">
+            <h3 className="map-gallery-title">{t('map.galleryTitle')}</h3>
+            <div className="map-gallery-grid">
+              <div className="map-gallery-item">
+                <img src="https://images.unsplash.com/photo-1720175626735-193ff59ebd90?w=600&h=400&fit=crop" alt={t('map.galleryTag')} />
+              </div>
+              <div className="map-gallery-item">
+                <img src="https://images.unsplash.com/photo-1774290490354-3c2fb95f8bf2?w=600&h=400&fit=crop" alt={t('map.galleryTag2')} />
+              </div>
+              <div className="map-gallery-item">
+                <img src="https://images.unsplash.com/photo-1696853961331-22ed783d24cd?w=600&h=400&fit=crop" alt={t('map.galleryTag3')} />
+              </div>
+            </div>
+            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginTop: '1rem', fontSize: '0.875rem' }}>
+              {t('home.reportAProblemDesc')}
+            </p>
+          </div>
         </div>
       </main>
 
