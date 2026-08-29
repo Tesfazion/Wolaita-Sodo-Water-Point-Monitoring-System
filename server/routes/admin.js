@@ -355,6 +355,58 @@ router.get('/technicians', async (req, res) => {
 });
 
 /**
+ * GET /api/admin/my-tasks
+ * Get reports assigned to the current technician
+ */
+router.get('/my-tasks', async (req, res) => {
+    // Only technicians use this view; others fall back to /reports
+    if (req.user.role !== 'technician') {
+        return res.status(403).json({
+            status: 'error',
+            message: 'Access denied. Technician only.'
+        });
+    }
+
+    try {
+        const query = `
+            SELECT 
+                r.id,
+                r.fault_type,
+                r.description,
+                r.priority,
+                r.status,
+                r.photo_url,
+                r.reported_at,
+                r.resolved_at,
+                wp.name AS water_point_name,
+                wp.address,
+                wp.latitude,
+                wp.longitude,
+                EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - r.reported_at))/3600 AS hours_since_report
+            FROM reports r
+            JOIN water_points wp ON r.water_point_id = wp.id
+            WHERE r.assigned_technician_id = $1
+              AND r.status NOT IN ('resolved', 'closed')
+            ORDER BY r.priority DESC, r.reported_at DESC
+        `;
+
+        const result = await db.query(query, [req.user.id]);
+
+        res.json({
+            status: 'success',
+            count: result.rows.length,
+            data: result.rows
+        });
+    } catch (error) {
+        console.error('Error fetching my tasks:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch assigned tasks'
+        });
+    }
+});
+
+/**
  * GET /api/admin/offices
  * Get all offices (admin only)
  */

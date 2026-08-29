@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { BarChart3, FileText, Droplet, TrendingUp, LogOut } from './Icons';
+import { BarChart3, FileText, Droplet, TrendingUp, LogOut, Wrench, Building } from './Icons';
 import { useTranslation } from 'react-i18next';
+import { isAdmin, isOfficeUser, isTechnician, canViewAnalytics } from '../../utils/roles';
 
 const AdminSidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
@@ -17,12 +18,26 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     navigate('/admin/login');
   };
 
-  const navItems = [
-    { to: '/admin/dashboard', icon: <BarChart3 size={20} />, label: t('admin.dashboard') },
-    { to: '/admin/reports', icon: <FileText size={20} />, label: t('admin.reports') },
-    { to: '/admin/water-points', icon: <Droplet size={20} />, label: t('admin.waterPoints') },
-    { to: '/admin/analytics', icon: <TrendingUp size={20} />, label: t('admin.analytics') },
-  ];
+  // Technicians have a focused view: only their assigned tasks.
+  const navItems = [];
+  if (isTechnician(user)) {
+    navItems.push({ to: '/admin/tasks', icon: <Wrench size={20} />, label: t('admin.myTasks') });
+  } else {
+    navItems.push({ to: '/admin/dashboard', icon: <BarChart3 size={20} />, label: t('admin.dashboard') });
+    navItems.push({ to: '/admin/reports', icon: <FileText size={20} />, label: t('admin.reports') });
+    navItems.push({ to: '/admin/water-points', icon: <Droplet size={20} />, label: t('admin.waterPoints') });
+    if (canViewAnalytics(user)) {
+      navItems.push({ to: '/admin/analytics', icon: <TrendingUp size={20} />, label: t('admin.analytics') });
+    }
+    if (isAdmin(user)) {
+      navItems.push({ to: '/admin/offices', icon: <Building size={20} />, label: t('admin.offices') });
+    }
+  }
+
+  const roleLabel = isAdmin(user) ? t('admin.roleAdmin')
+    : isOfficeUser(user) ? t('admin.roleOffice')
+    : isTechnician(user) ? t('admin.roleTechnician')
+    : (user?.role || t('admin.adminFallback'));
 
   return (
     <>
@@ -43,7 +58,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
         <div className="admin-user-section">
           <div className="admin-user-label">{t('admin.loggedInAs')}</div>
           <div className="admin-user-name">{user?.name || t('admin.admin')}</div>
-          <div className="admin-user-role">{user?.role || t('admin.adminFallback')}</div>
+          <div className="admin-user-role">{roleLabel}</div>
         </div>
 
         <nav className="admin-sidebar-nav">

@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { analyticsAPI } from '../../services/api';
 import AdminLayout from '../../components/common/AdminLayout';
+import AsyncState from '../../components/common/AsyncState';
 import { FileText, CheckCircle, Clock, Droplet, TrendingUp, Zap, Target, AlertTriangle } from '../../components/common/Icons';
 import { useTranslation } from 'react-i18next';
+import { getErrorMessage } from '../../utils/apiError';
 
 const AdminAnalytics = () => {
   const { t } = useTranslation();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    analyticsAPI.getDashboard()
-      .then(res => setStats(res.data.data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  const fetchStats = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await analyticsAPI.getDashboard();
+      setStats(res.data.data);
+    } catch (e) {
+      setError(getErrorMessage(e, t('admin.analyticsLoadError')));
+    } finally {
+      setLoading(false);
+    }
+  }, [t]);
+
+  useEffect(() => { fetchStats(); }, [fetchStats]);
 
   return (
     <AdminLayout>
@@ -23,10 +34,9 @@ const AdminAnalytics = () => {
         <p>{t('admin.analyticsDesc')}</p>
       </div>
 
-      {loading ? (
-        <div className="loading-center"><div className="spinner-lg spinner"></div></div>
-      ) : stats ? (
-        <>
+      <AsyncState loading={loading} error={error} onRetry={fetchStats}>
+        {stats && (
+          <>
           <div className="stats-grid animate-fade-in-up delay-1">
             <div className="stat-card blue">
               <div className="stat-card-icon"><FileText size={24} /></div>
@@ -121,9 +131,8 @@ const AdminAnalytics = () => {
             </div>
           </div>
         </>
-      ) : (
-        <div className="alert alert-error">{t('admin.analyticsError')}</div>
-      )}
+        )}
+      </AsyncState>
     </AdminLayout>
   );
 };

@@ -4,10 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { waterPointsAPI, reportsAPI } from '../../services/api';
 import CitizenHeader from '../../components/common/CitizenHeader';
 import Footer from '../../components/common/Footer';
+import { useToast } from '../../context/ToastContext';
+import { getErrorMessage } from '../../utils/apiError';
 import { Camera, Upload } from '../../components/common/Icons';
 
 const ReportPage = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [waterPoints, setWaterPoints] = useState([]);
   const [formData, setFormData] = useState({
     water_point_id: '', reporter_name: '', reporter_phone: '',
@@ -21,8 +24,10 @@ const ReportPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    waterPointsAPI.getAll().then(res => setWaterPoints(res.data.data)).catch(() => {});
-  }, []);
+    waterPointsAPI.getAll()
+      .then(res => setWaterPoints(res.data.data))
+      .catch((e) => toast.error(getErrorMessage(e, t('report.loadWaterPointsError'))));
+  }, [toast, t]);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 

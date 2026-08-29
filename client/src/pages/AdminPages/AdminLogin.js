@@ -10,15 +10,17 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => { if (isAuthenticated) navigate('/admin/dashboard'); }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (isAuthenticated && user) navigate(user.role === 'technician' ? '/admin/tasks' : '/admin/dashboard');
+  }, [isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(''); setLoading(true);
     const result = await login(email, password);
-    if (result.success) navigate('/admin/dashboard');
+    if (result.success) navigate(result.role === 'technician' ? '/admin/tasks' : '/admin/dashboard');
     else { setError(result.message || t('admin.loginFailed')); setLoading(false); }
   };
 
@@ -59,13 +61,14 @@ const AdminLogin = () => {
               </button>
             </form>
 
-            <div className="login-demo-box">
-              <strong className="login-demo-label">{t('admin.demoCreds')}</strong>
-              <div className="login-demo-creds">
-                <div><strong>{t('admin.adminLabel')}:</strong> admin@sodowater.gov.et / Admin@123</div>
-                <div><strong>{t('admin.officeLabel')}:</strong> office@sodowater.gov.et / Office@123</div>
+              <div className="login-demo-box">
+                <strong className="login-demo-label">{t('admin.demoCreds')}</strong>
+                <div className="login-demo-creds">
+                  <div><strong>{t('admin.adminLabel')}:</strong> admin@sodowater.gov.et / Admin@123</div>
+                  <div><strong>{t('admin.officeLabel')}:</strong> office@sodowater.gov.et / Office@123</div>
+                  <div><strong>{t('admin.technicianLabel')}:</strong> daniel@sodowater.gov.et / Tech@123</div>
+                </div>
               </div>
-            </div>
           </div>
         </div>
 

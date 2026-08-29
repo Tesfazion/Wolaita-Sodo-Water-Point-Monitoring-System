@@ -4,10 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { analyticsAPI } from '../../services/api';
 import CitizenHeader from '../../components/common/CitizenHeader';
 import Footer from '../../components/common/Footer';
+import { useToast } from '../../context/ToastContext';
+import { getErrorMessage } from '../../utils/apiError';
 import { Droplet, CheckCircle, AlertTriangle, Wrench, Map, FileText, BarChart3, ArrowRight } from '../../components/common/Icons';
 
 const HomePage = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [stats, setStats] = useState({ total: 0, working: 0, broken: 0, maintenance: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -22,9 +25,9 @@ const HomePage = () => {
           maintenance: data.filter(wp => wp.current_status === 'under_repair').length
         });
       })
-      .catch(() => {})
+      .catch((e) => toast.error(getErrorMessage(e, t('home.statsLoadError'))))
       .finally(() => setLoading(false));
-  }, []);
+  }, [toast, t]);
 
   return (
     <div>

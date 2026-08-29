@@ -14,11 +14,13 @@ const { authenticateToken } = require('../middleware/auth');
  */
 router.get('/dashboard', authenticateToken, async (req, res) => {
     try {
-        const officeFilter = req.user.role !== 'admin'
-            ? `WHERE office_id = ${req.user.office_id}`
-            : '';
-        
-        // Total water points
+        const isAdmin = req.user.role === 'admin';
+        // Office filter fragment. When non-admin, $1 is the user's office id.
+        const officeFilter = isAdmin ? '' : ' AND office_id = $1';
+        const officeParams = isAdmin ? [] : [req.user.office_id];
+
+        // Total water points (office filter uses WHERE here since there is no other predicate)
+        const waterPointsFilter = isAdmin ? '' : 'WHERE office_id = $1';
         const waterPointsQuery = `
             SELECT 
                 COUNT(*) as total,
@@ -26,12 +28,11 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
                 COUNT(*) FILTER (WHERE current_status = 'reported_broken') as broken,
                 COUNT(*) FILTER (WHERE current_status = 'under_repair') as under_repair
             FROM water_points
-            ${req.user.role !== 'admin' ? 'WHERE office_id = $1' : ''}
+            ${waterPointsFilter}
         `;
-        
-        const wpParams = req.user.role !== 'admin' ? [req.user.office_id] : [];
-        const wpResult = await db.query(waterPointsQuery, wpParams);
-        
+
+        const wpResult = await db.query(waterPointsQuery, officeParams);
+
         // Reports statistics
         const reportsQuery = `
             SELECT 
@@ -41,11 +42,12 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
                 COUNT(*) FILTER (WHERE status = 'resolved') as resolved,
                 COUNT(*) FILTER (WHERE priority = 'urgent') as urgent
             FROM reports
+            WHERE 1=1
             ${officeFilter}
         `;
-        
-        const reportsResult = await db.query(reportsQuery);
-        
+
+        const reportsResult = await db.query(reportsQuery, officeParams);
+
         // Average resolution time (in hours)
         const avgTimeQuery = `
             SELECT 
@@ -54,10 +56,11 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
             WHERE resolved_at IS NOT NULL
             ${officeFilter}
         `;
-        
-        const avgTimeResult = await db.query(avgTimeQuery);
-        
-        // Recent activity
+
+        const avgTimeResult = await db.query(avgTimeQuery, officeParams);
+
+        // Recent activity (qualify office_id since reports and water_points both have the column)
+        const recentOfficeFilter = isAdmin ? '' : ' AND r.office_id = $1';
         const recentQuery = `
             SELECT 
                 r.id,
@@ -68,26 +71,28 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
                 wp.name as water_point_name
             FROM reports r
             JOIN water_points wp ON r.water_point_id = wp.id
-            ${officeFilter}
+            WHERE 1=1
+            ${recentOfficeFilter}
             ORDER BY r.reported_at DESC
             LIMIT 5
         `;
-        
-        const recentResult = await db.query(recentQuery);
-        
+
+        const recentResult = await db.query(recentQuery, officeParams);
+
         // Fault types breakdown
         const faultTypesQuery = `
             SELECT 
                 fault_type,
                 COUNT(*) as count
             FROM reports
+            WHERE 1=1
             ${officeFilter}
             GROUP BY fault_type
             ORDER BY count DESC
         `;
-        
-        const faultTypesResult = await db.query(faultTypesQuery);
-        
+
+        const faultTypesResult = await db.query(faultTypesQuery, officeParams);
+
         // Monthly trends (last 6 months)
         const trendsQuery = `
             SELECT 
@@ -100,8 +105,8 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
             GROUP BY TO_CHAR(reported_at, 'YYYY-MM')
             ORDER BY month DESC
         `;
-        
-        const trendsResult = await db.query(trendsQuery);
+
+        const trendsResult = await db.query(trendsQuery, officeParams);
         
         res.json({
             status: 'success',

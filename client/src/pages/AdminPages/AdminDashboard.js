@@ -1,23 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { analyticsAPI } from '../../services/api';
 import AdminLayout from '../../components/common/AdminLayout';
+import AsyncState from '../../components/common/AsyncState';
 import { CheckCircle, AlertTriangle, Wrench, Clock, ArrowRight } from '../../components/common/Icons';
 import { useTranslation } from 'react-i18next';
+import { getErrorMessage } from '../../utils/apiError';
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    analyticsAPI.getDashboard()
-      .then(res => setStats(res.data.data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  const fetchStats = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await analyticsAPI.getDashboard();
+      setStats(res.data.data);
+    } catch (e) {
+      setError(getErrorMessage(e, t('admin.dashboardError')));
+    } finally {
+      setLoading(false);
+    }
+  }, [t]);
+
+  useEffect(() => { fetchStats(); }, [fetchStats]);
 
   return (
     <AdminLayout>
@@ -26,9 +37,8 @@ const AdminDashboard = () => {
         <p>{t('admin.welcomeBack')}{user?.name}{t('admin.welcomeDesc')}</p>
       </div>
 
-      {loading ? (
-        <div className="loading-center"><div className="spinner-lg spinner"></div></div>
-      ) : stats ? (
+      <AsyncState loading={loading} error={error} onRetry={fetchStats}>
+        {stats && (
         <>
           <div className="stats-grid animate-fade-in-up delay-1">
             <div className="stat-card green">
@@ -85,9 +95,8 @@ const AdminDashboard = () => {
             </div>
           </div>
         </>
-      ) : (
-        <div className="alert alert-error">{t('admin.dashboardError')}</div>
-      )}
+        )}
+      </AsyncState>
     </AdminLayout>
   );
 };

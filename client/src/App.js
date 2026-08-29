@@ -14,8 +14,11 @@ import AdminDashboard from './pages/AdminPages/AdminDashboard';
 import AdminReports from './pages/AdminPages/AdminReports';
 import AdminWaterPoints from './pages/AdminPages/AdminWaterPoints';
 import AdminAnalytics from './pages/AdminPages/AdminAnalytics';
+import AdminTasks from './pages/AdminPages/AdminTasks';
+import AdminOffices from './pages/AdminPages/AdminOffices';
 
 import PrivateRoute from './components/common/PrivateRoute';
+import RoleRoute from './components/common/RoleRoute';
 
 function App() {
   return (
@@ -30,11 +33,13 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
 
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-          <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-          <Route path="/admin/reports" element={<PrivateRoute><AdminReports /></PrivateRoute>} />
-          <Route path="/admin/water-points" element={<PrivateRoute><AdminWaterPoints /></PrivateRoute>} />
-          <Route path="/admin/analytics" element={<PrivateRoute><AdminAnalytics /></PrivateRoute>} />
+          <Route path="/admin" element={<PrivateRoute><RoleRoute path="/admin"><AdminDashboard /></RoleRoute></PrivateRoute>} />
+          <Route path="/admin/dashboard" element={<PrivateRoute><RoleRoute path="/admin/dashboard"><AdminDashboard /></RoleRoute></PrivateRoute>} />
+          <Route path="/admin/reports" element={<PrivateRoute><RoleRoute path="/admin/reports"><AdminReports /></RoleRoute></PrivateRoute>} />
+          <Route path="/admin/water-points" element={<PrivateRoute><RoleRoute path="/admin/water-points"><AdminWaterPoints /></RoleRoute></PrivateRoute>} />
+          <Route path="/admin/analytics" element={<PrivateRoute><RoleRoute path="/admin/analytics"><AdminAnalytics /></RoleRoute></PrivateRoute>} />
+          <Route path="/admin/tasks" element={<PrivateRoute><RoleRoute path="/admin/tasks"><AdminTasks /></RoleRoute></PrivateRoute>} />
+          <Route path="/admin/offices" element={<PrivateRoute><RoleRoute path="/admin/offices"><AdminOffices /></RoleRoute></PrivateRoute>} />
         </Routes>
       </Router>
     </AuthProvider>

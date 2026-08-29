@@ -1,30 +1,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { adminAPI, reportsAPI } from '../../services/api';
 import AdminLayout from '../../components/common/AdminLayout';
+import AsyncState from '../../components/common/AsyncState';
 import { Inbox } from '../../components/common/Icons';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../../context/ToastContext';
+import { getErrorMessage } from '../../utils/apiError';
 
 const AdminReports = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [reports, setReports] = useState([]);
   const [technicians, setTechnicians] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selected, setSelected] = useState(null);
   const [update, setUpdate] = useState({ status: '', notes: '', assigned_technician_id: '' });
   const [filter, setFilter] = useState('all');
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
+    setError('');
     try {
       const params = filter !== 'all' ? { status: filter } : {};
       const res = await adminAPI.getReports(params);
       setReports(res.data.data);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
-  }, [filter]);
+    } catch (e) {
+      setError(getErrorMessage(e, t('admin.manageReportsError')));
+    } finally {
+      setLoading(false);
+    }
+  }, [filter, t]);
 
   const fetchTechnicians = useCallback(async () => {
-    try { const res = await adminAPI.getTechnicians(); setTechnicians(res.data.data); } catch (e) {}
-  }, []);
+    try {
+      const res = await adminAPI.getTechnicians();
+      setTechnicians(res.data.data);
+    } catch (e) {
+      toast.error(getErrorMessage(e, t('admin.errorDefault')));
+    }
+  }, [toast, t]);
 
   useEffect(() => { fetchReports(); fetchTechnicians(); }, [fetchReports, fetchTechnicians]);
   useEffect(() => { fetchReports(); }, [fetchReports]);
@@ -33,9 +48,11 @@ const AdminReports = () => {
     e.preventDefault();
     try {
       await reportsAPI.updateStatus(selected.id, update);
-      alert(t('admin.reportUpdated'));
+      toast.success(t('admin.reportUpdated'));
       setSelected(null); fetchReports();
-    } catch (err) { alert(t('admin.errorPrefix') + (err.response?.data?.message || t('admin.errorDefault'))); }
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('admin.errorDefault')));
+    }
   };
 
   const openModal = (r) => {
@@ -63,11 +80,13 @@ const AdminReports = () => {
         ))}
       </div>
 
-      {loading ? (
-        <div className="loading-center"><div className="spinner-lg spinner"></div></div>
-      ) : reports.length === 0 ? (
-        <div className="card"><div className="card-body empty-state"><div className="empty-state-icon"><Inbox size={48} /></div><h3>{t('admin.noReportsFound')}</h3><p>{t('admin.noReportsMatch')}</p></div></div>
-      ) : (
+      <AsyncState
+        loading={loading}
+        error={error}
+        onRetry={fetchReports}
+        empty={reports.length === 0 ? t('admin.noReportsFound') : null}
+        emptyIcon={<Inbox size={48} />}
+      >
         <div className="table-wrap animate-fade-in-up delay-2">
           <div className="table-scroll">
             <table style={{ minWidth: 900 }}>
@@ -94,7 +113,7 @@ const AdminReports = () => {
             </table>
           </div>
         </div>
-      )}
+      </AsyncState>
 
       {selected && (
         <div className="modal-overlay" onClick={() => setSelected(null)}>

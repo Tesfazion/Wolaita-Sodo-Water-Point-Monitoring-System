@@ -33,7 +33,8 @@ export const reportsAPI = {
 export const adminAPI = {
   getReports: (params = {}) => axios.get(`${API_BASE}/admin/reports`, { params }),
   getTechnicians: () => axios.get(`${API_BASE}/admin/technicians`),
-  getOffices: () => axios.get(`${API_BASE}/admin/offices`)
+  getOffices: () => axios.get(`${API_BASE}/admin/offices`),
+  getMyTasks: () => axios.get(`${API_BASE}/admin/my-tasks`)
 };
 
 // ===== Analytics API =====

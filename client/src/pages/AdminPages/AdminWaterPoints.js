@@ -90,7 +90,7 @@ const AdminWaterPoints = () => {
                     <td style={{ color: 'var(--text-secondary)' }}>{wp.address}</td>
                     <td><span className={`badge ${statusColor(wp.current_status)}`}>{wp.current_status.replace('_', ' ')}</span></td>
                     <td style={{ fontWeight: 600, textAlign: 'center' }}>{wp.active_reports || 0}</td>
-                    <td className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{wp.latitude.toFixed(4)}, {wp.longitude.toFixed(4)}</td>
+                    <td className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{Number(wp.latitude).toFixed(4)}, {Number(wp.longitude).toFixed(4)}</td>
                   </tr>
                 ))}
               </tbody>
